@@ -1,5 +1,6 @@
 package com.hluque.sales.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
@@ -18,7 +19,12 @@ public class Order {
     private Long id;
 
     @Column(name = "order_serial")
-    private UUID orderSerial;
+    private final UUID orderSerial;
+
+    public Order(Set<Product> products) {
+        orderSerial = UUID.randomUUID();
+        this.products = products;
+    }   
 
     @ManyToMany
     @JoinTable(
@@ -31,23 +37,23 @@ public class Order {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public UUID getOrderSerial() {
         return orderSerial;
     }
 
-    public void setOrderSerial(UUID orderSerial) {
-        this.orderSerial = orderSerial;
-    }
-
     public Set<Product> getProducts() {
-        return products;
+        return products == null ? new HashSet<>() : products;
     }
 
     public void setProducts(Set<Product> products) {
         this.products = products;
+    }
+    
+    public double calculateTotal(){
+        double totalProducts = 0;
+        for (Product product : this.getProducts()) {
+            totalProducts += product.getPrice();
+        }
+        return totalProducts;
     }
 }

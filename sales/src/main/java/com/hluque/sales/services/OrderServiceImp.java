@@ -4,19 +4,30 @@ import com.hluque.sales.entities.Order;
 import com.hluque.sales.entities.Product;
 import com.hluque.sales.repositories.OrderRepo;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrderServiceImp implements OrderService {
-    
+
     @Autowired
     private OrderRepo orderRepo;
 
     @Override
     public Order getOrderBySerial(UUID serial) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Optional<Order> order = orderRepo.findByOrderSerial(serial);
+        return order.isPresent() ? order.get() : null;
+    }
+
+    public double calculateTotalOrder(UUID serial) {
+        Order order = getOrderBySerial(serial);
+        if (order == null) {
+            throw new NoSuchElementException("The order with serial " + serial + " doesn't exist");
+        }
+        return order.calculateTotal();
     }
 
     @Override
@@ -26,12 +37,16 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public Order insertOrder(Order order) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return orderRepo.save(order);
     }
 
     @Override
-    public void addProductToOrder(Product product) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void addProductToOrder(UUID orderSerial, Product product) {
+        Order order = getOrderBySerial(orderSerial);
+        if (order == null) {
+            throw new NoSuchElementException("The order with serial " + orderSerial + " doesn't exist");
+        }
+        order.getProducts().add(product);
+        orderRepo.save(order);
     }
-    
 }

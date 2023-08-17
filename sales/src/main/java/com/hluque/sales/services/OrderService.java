@@ -13,5 +13,5 @@ public interface OrderService {
     
     public Order insertOrder(Order order);
     
-    public void addProductToOrder(Product product);
+    public void addProductToOrder(UUID orderSerial, Product product);
 }

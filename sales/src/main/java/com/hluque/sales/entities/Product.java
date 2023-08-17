@@ -25,6 +25,11 @@ public class Product {
     @ManyToMany(mappedBy = "products")
     private Set<Order> orders;
 
+    public Product(String name, Double price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public Long getId() {
         return id;
     }
