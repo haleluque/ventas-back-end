@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -16,21 +17,25 @@ import javax.persistence.Table;
 public class Order {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "order_serial")
-    private final UUID orderSerial;
+    private UUID orderSerial;
 
-    public Order(Set<Product> products) {
-        orderSerial = UUID.randomUUID();
+    public Order() {
+    }    
+    
+    public Order(Set<Product> products, UUID orderSerial) {
         this.products = products;
-    }   
+        this.orderSerial = orderSerial;
+    }
 
     @ManyToMany
     @JoinTable(
             name = "order_products",
-            joinColumns = @JoinColumn(name = "id_order"),
-            inverseJoinColumns = @JoinColumn(name = "id_product"))
+            joinColumns = @JoinColumn(name = "id_order", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "id_product", referencedColumnName = "id"))
     private Set<Product> products;
 
     public Long getId() {
@@ -48,8 +53,8 @@ public class Order {
     public void setProducts(Set<Product> products) {
         this.products = products;
     }
-    
-    public double calculateTotal(){
+
+    public double calculateTotal() {
         double totalProducts = 0;
         for (Product product : this.getProducts()) {
             totalProducts += product.getPrice();

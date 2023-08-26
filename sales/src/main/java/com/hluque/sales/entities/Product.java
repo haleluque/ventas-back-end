@@ -1,11 +1,9 @@
 package com.hluque.sales.entities;
 
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,8 +20,8 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
-    @ManyToMany(mappedBy = "products")
-    private Set<Order> orders;
+    public Product() {
+    }
 
     public Product(String name, Double price) {
         this.name = name;
@@ -52,13 +50,5 @@ public class Product {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
     }
 }
